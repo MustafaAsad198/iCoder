@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}iCoder - Home{% endblock title %}
+{% block homeactive %}active{% endblock homeactive %}
+{% block js %}
+<script>
+	previews=document.getElementsByClassName('preview')
+	Array.from(previews).forEach((element)=>{
+		element.innerHTML=element.innerText
+	})
+</script>
+{% endblock js %}
+{% block body %}
+<div class="container my-3">
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to iCoder!</h1>
+        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+        <hr class="my-4">
+        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <a class="btn btn-outline-success my-2 my-sm-0 btn-lg" href="/blog" role="button">Head to blog</a>
+    </div>
+</div>
+
+<div class="py-2 text-center">
+    <h2>Checkout our Blogs</h2>
+    <p class="lead">Following are some of our blogs. You can go through them.</p>
+</div>
+<div class="container">
+    {% for post in allposts %}
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row my-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-primary">Article by {{post.author}} </strong>
+          <h3 class="mb-0">{{post.title}} </h3>
+          <div class="mb-1 text-muted">{{post.timestamp}} </div>
+          <p class="card-text mb-auto"><div class="preview">{{post.content|safe|truncatechars:100}}</div> </p>
+          <div class="my-2">
+            <a href="/blog/{{post.slug}}" role="button" class="btn btn-outline-success my-2 my-sm-0">Continue reading</a>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+    
+
+{% endblock body %}
