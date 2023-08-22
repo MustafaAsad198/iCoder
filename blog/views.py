@@ -3,10 +3,23 @@ from django.shortcuts import redirect, render,HttpResponse
 from .models import Post,Blogcomment
 from django.contrib import messages
 from blog.templatetags import extras
+from .forms import PostCreateForm
+from datetime import datetime
 # Create your views here.
 def bloghome(request):
+    if request.method == 'POST':
+        form=PostCreateForm(request.POST)
+        if form.is_valid():
+            instance=form.save(commit=False)
+            instance.author=request.user.username
+            instance.timestamp=datetime.now()
+            instance.save()
+            return redirect('bloghome')
+    else:
+        form=PostCreateForm()
     allposts=Post.objects.all()
-    context={'allposts':allposts}
+    user=request.user
+    context={'allposts':allposts,'form':form,'user':user}
     return render(request,'blog/bloghome.html',context)
 def blogpost(request,slug):
     post=Post.objects.filter(slug=slug).first()

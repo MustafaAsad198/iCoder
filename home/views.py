@@ -8,6 +8,7 @@ from .models import Contact
 from blog.models import Post
 from django.contrib import messages
 from django.contrib.auth.models import User
+from .jwt_utils import generate_jwt_token
 from django.contrib.auth import authenticate,login,logout
 # Create your views here.
 def home(request):
@@ -58,9 +59,13 @@ def handlesignup(request):
         if pass1!=pass2:
             messages.error(request,'Your set password and confirmation password do not match.')
             return redirect('home')
+        if User.objects.filter(username=username):
+            messages.error(request,'Username already exists')
+            return redirect('home')
         
 
         myuser=User.objects.create_user(username,email,pass1)
+        token = generate_jwt_token(myuser.id)
         myuser.first_name=fname
         myuser.last_name=lname
         myuser.save()
@@ -75,6 +80,7 @@ def handlelogin(request):
         loginpass=request.POST['loginpass']
         user=authenticate(username=loginusername,password=loginpass)
         if user is not None:
+            token = generate_jwt_token(user.id)
             login(request,user)
             messages.success(request,'You have successfully logged in!')
             return redirect('home')

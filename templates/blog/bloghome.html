@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}iCoder - BlogHome{% endblock title %}
 {% block blogactive %}active{% endblock blogactive %}
+{% load crispy_forms_tags %}
 {% block js %}
 <script>
 	previews=document.getElementsByClassName('preview')
@@ -12,6 +13,14 @@
 {% block body %}
 <div class="container my-3">
 		<h2>Our Blogs</h2>
+		{% if user.is_authenticated %}
+		<form action="" method="post"> {% csrf_token %}
+			{{ form|crispy }}
+			<button type="submit" class="btn btn-outline-success my-2 my-sm-0">Submit</button>
+		</form>
+		{% else %}
+		<h4>Login to add a Post</h4>
+		{% endif %}
 		{% for post in allposts %}
 		<div class="row no-gutters border rounded overflow-hidden flex-md-row my-4 shadow-sm h-md-250 position-relative">
 				<div class="col p-4 d-flex flex-column position-static">
